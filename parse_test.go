@@ -13,12 +13,13 @@ type (
 	}
 	MyStruct struct {
 		ID   string         //deliberately omit struct tag
-		BVal bool           `json:"b_val"`
+		BVal *bool          `json:"b_val"`
 		IVal *int           `json:"i_val"`
-		FVal float64        `json:"f_val"`
+		UVal *uint8         `json:"u_val"`
+		FVal *float64       `json:"f_val"`
 		PVal *string        `json:"p_val"`
-		AVal [3]int         `json:"a_val"`
-		LVal []*string      `json:"l_val"`
+		AVal [3]int32       `json:"a_val"`
+		LVal []string       `json:"l_val"`
 		MVal map[string]int `json:"m_val"`
 		SVal *SubStruct     `json:"s_val"`
 	}
@@ -31,6 +32,7 @@ func TestParse(t *testing.T) {
 		"i_val": 8848,
 		"f_val": 8848, //deliberately use an integer as float
 		"p_val": "pointer to string",
+		"u_val": 123,
 		"a_val": [3]int{1, 2, 3},
 		"l_val": []string{"a", "b", "c"},
 		"m_val": map[string]int{"a": 1, "b": 2, "c": 3},

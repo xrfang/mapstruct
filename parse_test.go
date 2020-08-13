@@ -10,8 +10,8 @@ import (
 type (
 	SubStruct struct {
 		Date      time.Time `yaml:"date"`
-		Latitude  float64   `json:"lat"` //mixed json and yaml tag
-		Longitude float64   `json:"lon"`
+		Latitude  float64   `json:"lat,omitempty"` //mixed json and yaml tag
+		Longitude float64   `json:"lon,omitempty"`
 	}
 	MyStruct struct {
 		ID   string           //deliberately omit struct tag
@@ -23,7 +23,7 @@ type (
 		AVal [2][]int32       `json:"a_val"`
 		LVal [][2]*string     `json:"l_val"`
 		MVal map[string][]int `json:"m_val"`
-		SVal *SubStruct       `json:"s_val"`
+		SVal *SubStruct       `json:"s_val,omitempty"`
 		//PAVal *[2]int32   -- pointer to array, slice or map are NOT supported
 	}
 )

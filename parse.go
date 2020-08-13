@@ -133,18 +133,44 @@ func getReflectValue(rt reflect.Type, v interface{}) (rv reflect.Value, err erro
 			rv = reflect.ValueOf(&d)
 		}
 	case reflect.Map:
-		err = errors.New("not implemented")
+		if indi {
+			panic(errors.New("pointer to map not supported"))
+		}
+		vr := reflect.MakeMap(rt)
+		for _, k := range rv.MapKeys() {
+			vi := rv.MapIndex(k).Interface()
+			rvi, err := getReflectValue(rt.Elem(), vi)
+			assert(err)
+			vr.SetMapIndex(k, rvi)
+		}
+		rv = vr
 	case reflect.Array:
-		//err = errors.New("not implemented")
-		t := reflect.ArrayOf(rv.Len(), rv.Type().Elem())
-		fmt.Printf("type of array: %v (%T)\n", t, t)
-		vr := reflect.New(t)
-		// for i := 0; i < rv.Len(); i++ {
-		// vr.Field(i).Set(rv.Field(i))
-		// }
+		if indi {
+			panic(errors.New("pointer to array not supported"))
+		}
+		vr := reflect.New(rt)
+		for i := 0; i < rv.Len(); i++ {
+			if i >= rt.Len() {
+				break
+			}
+			vi := rv.Index(i).Interface()
+			rvi, err := getReflectValue(rt.Elem(), vi)
+			assert(err)
+			vr.Elem().Index(i).Set(rvi)
+		}
 		rv = vr.Elem()
 	case reflect.Slice:
-		err = errors.New("not implemented")
+		if indi {
+			panic(errors.New("pointer to slice not supported"))
+		}
+		vr := reflect.MakeSlice(rt, 0, rv.Len())
+		for i := 0; i < rv.Len(); i++ {
+			vi := rv.Index(i).Interface()
+			rvi, err := getReflectValue(rt.Elem(), vi)
+			assert(err)
+			vr = reflect.Append(vr, rvi)
+		}
+		rv = vr
 	case reflect.Struct:
 		if v != nil {
 			if indi {

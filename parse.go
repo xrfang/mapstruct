@@ -197,11 +197,11 @@ func Parse(mapVar, structVar interface{}) (err error) {
 	}()
 	v := reflect.ValueOf(structVar)
 	if v.Type().Kind() != reflect.Ptr {
-		return errors.New("output data type must be a pointer")
+		return fmt.Errorf("output data type not pointer (%v)", v.Type().Kind())
 	}
 	v = v.Elem()
 	if v.Type().Kind() != reflect.Struct {
-		return errors.New("output data type must be a struct")
+		return fmt.Errorf("output data type not struct (%v)", v.Type().Kind())
 	}
 	t := reflect.TypeOf(structVar).Elem()
 	for i := 0; i < v.NumField(); i++ {
